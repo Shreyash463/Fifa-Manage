@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header" style="text-align: center; margin-bottom: 2rem;">
+    <h1 class="page-title">Crowd Density <span class="orange-gradient-text">Dashboard</span></h1>
+    <p class="page-subtitle">Real-time status updates across 5 key stadium security & transit zones</p>
+</div>
+
+<div class="card" style="display: flex; flex-direction: column; gap: 2rem; margin-bottom: 2rem;">
+    <!-- Dashboard Cards Grid -->
+    <div class="dashboard-grid" id="dashboardGrid">
+        {% for zone, density in crowd.items() %}
+        <div class="zone-card {{ density }}" id="zone-card-{{ zone|replace(' ', '-') }}">
+            <div class="zone-icon">
+                {% if 'Gate' in zone %}
+                    <i class="fa-solid fa-door-open"></i>
+                {% elif 'Food' in zone %}
+                    <i class="fa-solid fa-utensils"></i>
+                {% elif 'Parking' in zone %}
+                    <i class="fa-solid fa-square-p"></i>
+                {% else %}
+                    <i class="fa-solid fa-users"></i>
+                {% endif %}
+            </div>
+            <div class="zone-name">{{ zone }}</div>
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span class="status-text">{{ density }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Simulate Crowd Changes -->
+    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 0.75rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+        <p style="font-size: 0.9rem; color: var(--text-secondary); text-align: center;">
+            <i class="fa-solid fa-circle-info"></i> The dashboard updates dynamically. Press the button below to simulate crowd shifts.
+        </p>
+        <button class="btn-sim" id="btnSimulate">
+            <i class="fa-solid fa-arrows-rotate" id="simIcon"></i>
+            <span>Simulate Crowd Update</span>
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const btnSimulate = document.getElementById('btnSimulate');
+    const simIcon = document.getElementById('simIcon');
+
+    // Define icons for each zone
+    function getZoneIcon(zoneName) {
+        if (zoneName.includes('Gate')) {
+            return '<i class="fa-solid fa-door-open"></i>';
+        } else if (zoneName.includes('Food')) {
+            return '<i class="fa-solid fa-utensils"></i>';
+        } else if (zoneName.includes('Parking')) {
+            return '<i class="fa-solid fa-square-p"></i>';
+        } else {
+            return '<i class="fa-solid fa-users"></i>';
+        }
+    }
+
+    btnSimulate.addEventListener('click', async () => {
+        // Spin icon during update
+        simIcon.classList.add('fa-spin');
+        btnSimulate.disabled = true;
+
+        try {
+            const response = await fetch('/api/crowd/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                // Short timeout to let the user see the transition
+                setTimeout(() => {
+                    // Update DOM elements dynamically
+                    for (const [zone, density] of Object.entries(data.data)) {
+                        const cardId = `zone-card-${zone.replace(' ', '-')}`;
+                        const cardElement = document.getElementById(cardId);
+                        
+                        if (cardElement) {
+                            // Reset class names and apply new density
+                            cardElement.className = `zone-card ${density}`;
+                            
+                            // Update icons and text
+                            const iconDiv = cardElement.querySelector('.zone-icon');
+                            iconDiv.innerHTML = getZoneIcon(zone);
+                            
+                            const textSpan = cardElement.querySelector('.status-text');
+                            textSpan.textContent = density;
+                        }
+                    }
+                    simIcon.classList.remove('fa-spin');
+                    btnSimulate.disabled = false;
+                }, 600);
+            }
+        } catch (error) {
+            console.error("Error updates simulation:", error);
+            simIcon.classList.remove('fa-spin');
+            btnSimulate.disabled = false;
+        }
+    });
+</script>
+{% endblock %}

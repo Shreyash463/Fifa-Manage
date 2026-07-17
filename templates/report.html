@@ -6,8 +6,8 @@
     <p class="page-subtitle">For staff and volunteers to flag facility, safety, or logistics concerns</p>
 </div>
 
-<div class="card" style="max-width: 600px; margin: 0 auto;">
-    <form action="{{ url_for('report') }}" method="POST" id="issueReportForm">
+<div class="card" id="main-content" tabindex="-1" style="max-width: 600px; margin: 0 auto;">
+    <form action="{{ url_for('main.report') }}" method="POST" id="issueReportForm">
         <div class="form-group">
             <label class="form-label" for="reporter_name">Your Name / Volunteer ID</label>
             <input type="text" class="form-control" id="reporter_name" name="reporter_name" placeholder="e.g. Volunteer #142 (Leave empty for anonymous)" autocomplete="off">

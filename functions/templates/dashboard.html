@@ -6,27 +6,33 @@
     <p class="page-subtitle">Real-time status updates across 5 key stadium security & transit zones</p>
 </div>
 
-<div class="card" style="display: flex; flex-direction: column; gap: 2rem; margin-bottom: 2rem;">
+<div class="card" id="main-content" tabindex="-1" style="display: flex; flex-direction: column; gap: 2rem; margin-bottom: 2rem;">
     <!-- Dashboard Cards Grid -->
     <div class="dashboard-grid" id="dashboardGrid">
         {% for zone, density in crowd.items() %}
         <div class="zone-card {{ density }}" id="zone-card-{{ zone|replace(' ', '-') }}">
             <div class="zone-icon">
                 {% if 'Gate' in zone %}
-                    <i class="fa-solid fa-door-open"></i>
+                    <i class="fa-solid fa-door-open" aria-hidden="true"></i>
                 {% elif 'Food' in zone %}
-                    <i class="fa-solid fa-utensils"></i>
+                    <i class="fa-solid fa-utensils" aria-hidden="true"></i>
                 {% elif 'Parking' in zone %}
-                    <i class="fa-solid fa-square-p"></i>
+                    <i class="fa-solid fa-square-p" aria-hidden="true"></i>
                 {% else %}
-                    <i class="fa-solid fa-users"></i>
+                    <i class="fa-solid fa-users" aria-hidden="true"></i>
                 {% endif %}
             </div>
             <div class="zone-name">{{ zone }}</div>
-            <div class="status-indicator">
+            <div class="status-indicator" aria-live="polite" aria-atomic="true">
                 <span class="status-dot"></span>
                 <span class="status-text">{{ density }}</span>
             </div>
+            
+            {% if density == 'High' %}
+            <div class="alternate-route" style="margin-top: 1rem; font-size: 0.85rem; padding: 0.5rem; background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--color-high); border-radius: 4px; text-align: left; color: #f87171;">
+                <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> Alternate Route: {{ alternates.get(zone) }}
+            </div>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
@@ -76,6 +82,7 @@
             });
 
             const data = await response.json();
+            const alternates = {{ alternates|tojson }};
             
             if (data.status === 'success') {
                 // Short timeout to let the user see the transition
@@ -95,6 +102,22 @@
                             
                             const textSpan = cardElement.querySelector('.status-text');
                             textSpan.textContent = density;
+
+                            // Handle alternate route banner (Decision Support)
+                            let alternateDiv = cardElement.querySelector('.alternate-route');
+                            if (density === 'High') {
+                                if (!alternateDiv) {
+                                    alternateDiv = document.createElement('div');
+                                    alternateDiv.className = 'alternate-route';
+                                    alternateDiv.style.cssText = 'margin-top: 1rem; font-size: 0.85rem; padding: 0.5rem; background: rgba(239, 68, 68, 0.1); border-left: 3px solid var(--color-high); border-radius: 4px; text-align: left; color: #f87171;';
+                                    cardElement.appendChild(alternateDiv);
+                                }
+                                alternateDiv.innerHTML = `<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> Alternate Route: ${alternates[zone] || ''}`;
+                            } else {
+                                if (alternateDiv) {
+                                    alternateDiv.remove();
+                                }
+                            }
                         }
                     }
                     simIcon.classList.remove('fa-spin');

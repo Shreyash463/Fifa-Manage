@@ -6,7 +6,19 @@
     <p class="page-subtitle">Manage and resolve reported issues in real-time</p>
 </div>
 
-<div class="card">
+{% if has_high_crowd %}
+<div class="high-crowd-alert-banner" style="margin-bottom: 2rem; padding: 1.25rem 1.5rem; background: rgba(239, 68, 68, 0.15); border: 1px solid var(--color-high); border-radius: 8px; display: flex; align-items: center; gap: 1rem; color: #fecaca; animation: pulseRed 2s infinite;">
+    <div style="font-size: 1.5rem; color: var(--color-high);"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div>
+    <div>
+        <strong style="color: #fca5a5; font-size: 1.05rem;">CRITICAL STAFF ALERT: High Crowd Density Detected!</strong>
+        <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem; color: var(--text-secondary);">
+            One or more stadium zones are reporting **High** crowd density levels. Please coordinate with ground staff to check alternates and manage gates immediately.
+        </p>
+    </div>
+</div>
+{% endif %}
+
+<div class="card" id="main-content" tabindex="-1">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
         <h2 style="font-size: 1.3rem; font-weight: 700;">Active & Resolved Issues</h2>
         <div style="font-size: 0.9rem; color: var(--text-secondary);">
@@ -61,25 +73,25 @@
                             </td>
                             <td>
                                 <div class="admin-actions">
-                                    <!-- Toggle Status Form -->
-                                    <form action="{{ url_for('resolve_issue', issue_id=issue.id) }}" method="POST" style="display:inline;">
-                                        {% if issue.status == 'Open' %}
-                                            <button type="submit" class="btn-action resolve" title="Mark as Resolved">
-                                                <i class="fa-solid fa-check"></i> Resolve
-                                            </button>
-                                        {% else %}
-                                            <button type="submit" class="btn-action unresolve" title="Reopen Issue">
-                                                <i class="fa-solid fa-rotate-left"></i> Reopen
-                                            </button>
-                                        {% endif %}
-                                    </form>
+                                     <!-- Toggle Status Form -->
+                                     <form action="{{ url_for('main.resolve_issue', issue_id=issue.id) }}" method="POST" style="display:inline;">
+                                         {% if issue.status == 'Open' %}
+                                             <button type="submit" class="btn-action resolve" title="Mark as Resolved">
+                                                 <i class="fa-solid fa-check" aria-hidden="true"></i> Resolve
+                                             </button>
+                                         {% else %}
+                                             <button type="submit" class="btn-action unresolve" title="Reopen Issue">
+                                                 <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Reopen
+                                             </button>
+                                         {% endif %}
+                                     </form>
 
-                                    <!-- Delete Form -->
-                                    <form action="{{ url_for('delete_issue', issue_id=issue.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to permanently delete this issue report?');">
-                                        <button type="submit" class="btn-action delete" title="Delete Report">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </button>
-                                    </form>
+                                     <!-- Delete Form -->
+                                     <form action="{{ url_for('main.delete_issue', issue_id=issue.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to permanently delete this issue report?');">
+                                         <button type="submit" class="btn-action delete" aria-label="Delete issue report" title="Delete Report">
+                                             <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                                         </button>
+                                     </form>
                                 </div>
                             </td>
                         </tr>

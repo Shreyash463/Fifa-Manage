@@ -11,10 +11,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to Main Content</a>
     <header>
         <div class="nav-container">
-            <a href="{{ url_for('home') }}" class="brand-logo">
-                <i class="fa-solid fa-soccer-ball"></i>
+            <a href="{{ url_for('main.home') }}" class="brand-logo">
+                <i class="fa-solid fa-soccer-ball" aria-hidden="true"></i>
                 <span>FanPath</span> AI
             </a>
             
@@ -26,23 +27,23 @@
             
             <ul class="nav-links" id="navLinks">
                 <li>
-                    <a href="{{ url_for('home') }}" class="nav-link {% if request.endpoint == 'home' %}active{% endif %}" id="nav-home">
-                        <i class="fa-solid fa-comments"></i> Assistant
+                    <a href="{{ url_for('main.home') }}" class="nav-link {% if request.endpoint == 'main.home' %}active{% endif %}" id="nav-home">
+                        <i class="fa-solid fa-comments" aria-hidden="true"></i> Assistant
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}" id="nav-dashboard">
-                        <i class="fa-solid fa-chart-simple"></i> Crowd Dashboard
+                    <a href="{{ url_for('main.dashboard') }}" class="nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}" id="nav-dashboard">
+                        <i class="fa-solid fa-chart-simple" aria-hidden="true"></i> Crowd Dashboard
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url_for('report') }}" class="nav-link {% if request.endpoint == 'report' %}active{% endif %}" id="nav-report">
-                        <i class="fa-solid fa-circle-exclamation"></i> Report Issue
+                    <a href="{{ url_for('main.report') }}" class="nav-link {% if request.endpoint == 'main.report' %}active{% endif %}" id="nav-report">
+                        <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> Report Issue
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url_for('admin') }}" class="nav-link {% if request.endpoint == 'admin' %}active{% endif %}" id="nav-admin">
-                        <i class="fa-solid fa-user-shield"></i> Admin
+                    <a href="{{ url_for('main.admin') }}" class="nav-link {% if request.endpoint == 'main.admin' %}active{% endif %}" id="nav-admin">
+                        <i class="fa-solid fa-user-shield" aria-hidden="true"></i> Admin
                     </a>
                 </li>
             </ul>

@@ -1,118 +1,112 @@
-# FanPath AI — FIFA World Cup 2026 Stadium Visitor Assistant
+# FanPath AI — FIFA World Cup 2026 Stadium Assistant
 
-FanPath AI is a GenAI-powered web application built using Python Flask and Google Gemini. It is designed to assist visitors navigating stadium directions, concession stalls, transport hubs, accessibility structures, and live crowd situations during the FIFA World Cup 2026 games.
-Deployed Link=https://fifa-manage.onrender.com/
-    
-## 🌟 Key Features
-
-1. **AI Chatbot Assistant**:
-   - Seeded with comprehensive stadium knowledge (gates, restrooms, food, sensory rooms, transport options).
-   - Dynamic multilingual support (automatically detects and responds in English, Español, or हिंदी).
-   - Utilizes the new official **Google GenAI Python SDK** (`google-genai`) with the `gemini-3.1-flash-lite` model.
-   - Built-in stateless conversation context manager.
-   - Offline/Demo fallback capability in case the API key is not configured.
-
-2. **Real-time Crowd Density Dashboard**:
-   - Visualizes crowd load (Low, Medium, High) across 5 stadium zones (Gate A, Gate B, Food Court, Parking, Main Stand).
-   - Features color-coded status badges with pulsing animation lights (green for Low, yellow/orange for Medium, and red for High).
-   - Integrates an interactive "Simulate Crowd Update" AJAX action to trigger mock density changes without page reloads.
-
-3. **Volunteer Issue Reporting & Admin Console**:
-   - Simple form letting volunteers/staff log facility or safety issues (e.g., broken escalators, spills, lines).
-   - Automatically saves reports to a local `issues.json` database.
-   - Admin console to list, toggle resolution state, or delete issue logs.
-
-4. **Premium Responsive UI**:
-   - Sleek dark theme with vibrant soccer-orange accents.
-   - Modern glassmorphism card panels with Outfit typography.
-   - High contrast ratios (fully accessible for visual scanners) and `aria-label` tags for screen readers.
+FanPath AI is a premium, GenAI-powered web application built using Python Flask and Google Gemini. It is designed to assist visitors navigating stadium directions, concession stalls, transport hubs, accessibility structures, and live crowd situations during the FIFA World Cup 2026 games.
 
 ---
 
-## 🛠️ Project Structure
+## 🗺️ Challenge Focus Area Mapping
 
+The following table maps the 8 challenge focus areas to the specific features built into FanPath AI:
+
+| Focus Area | Feature in FanPath AI |
+| :--- | :--- |
+| **1. Navigation** | Real-time interactive AI Chatbot with stadium gate/seating maps and quick static direction short-circuits. |
+| **2. Crowd Management** | Pulse-colored Live Crowd Density Dashboard monitoring Gate A, Gate B, Food Court, Parking, and Main Stand. |
+| **3. Accessibility** | "Skip to Main Content" links, keyboard Tab focus outline highlights, `aria-live="polite"` screen readers for chatbot logs and crowd status updates, high-contrast WCAG AA grey styles, and Gate D recommended entryways. |
+| **4. Transportation** | Dedicated `/transport` details guide listing NJ Transit Rail routes, express shuttle bus locations, and public parking lots. |
+| **5. Sustainability** | Waste segregation sorting bins guidelines, public transit benefits messaging, and water refill station details (at Sections 110 and 220). |
+| **6. Multilingual Assistance** | Automated language-detection algorithms handling English, Español (Spanish), and हिंदी (Hindi) dynamically for both static lookups and GenAI models. |
+| **7. Operational Intelligence** | Secure Admin Console allowing staff to track, toggle resolution state, or delete issues logged by volunteers. |
+| **8. Real-time Decision Support** | Alternate routing instructions triggered on High density cards for fans, coupled with warning banners on the Admin page. |
+
+---
+
+## 🛠️ Refactored Architecture
+
+The codebase has been refactored from a single file to a clean, modular design:
 ```
 d:\Fifa manage\
-  ├─ app.py               # Main Flask server and APIs
-  ├─ test_app.py          # Unit test suite
-  ├─ requirements.txt     # Dependency listing
+  ├─ app.py               # Main Flask server initialization
+  ├─ config.py            # Hardcoded config parameters and secrets loader
+  ├─ data_service.py      # Database loaders, in-memory caches, and HTML sanitizers
+  ├─ gemini_service.py    # GenAI connectors, 5-min caching, and short-circuits
+  ├─ extensions.py        # Shared Flask extensions (Flask-Limiter)
+  ├─ routes.py            # Blueprint endpoint routing, auth guards, and decision rules
+  ├─ requirements.txt     # Third-party libraries
   ├─ Dockerfile           # Docker image setup for Cloud Run
   ├─ firebase.json        # Firebase Hosting & functions routing
-  ├─ .firebaserc          # Firebase project configuration
+  ├─ .firebaserc          # Firebase default project
   ├─ static/
-  │    └─ css/style.css   # Theme styles, grids, pulses, and responsiveness
-  └─ templates/           # Jinja2 HTML templates
-       ├─ base.html       # Structural frame, nav bar, mobile scripts
-       ├─ home.html       # Chatbot view & AJAX chat client
-       ├─ dashboard.html  # Crowd density status & simulator
-       ├─ report.html     # Issue reporting form
-       └─ admin.html      # Admin dashboard console
+  │    └─ css/style.css   # Accessibility outlines, pulses, and minified theme
+  ├─ templates/           # Accessibility-compliant Jinja2 templates
+  │    ├─ base.html       # Skip-to-content links and navigation headers
+  │    ├─ home.html       # Chat client with aria-live updates
+  │    ├─ dashboard.html  # Live crowd grid and alternates decision panels
+  │    ├─ transport.html  # Transit and green sustainability tips
+  │    ├─ report.html     # Secure volunteer issue reporting form
+  │    ├─ admin.html      # Token-guarded staff console and high-density alerts
+  │    └─ error.html      # Safe generic error screens (400, 403, 404, 429, 500)
+  └─ tests/               # pytest test suite
+       ├─ test_data_service.py
+       ├─ test_gemini_service.py
+       └─ test_routes.py
 ```
+
+---
+
+## 🔒 Security Enhancements
+1. **Secrets Security**: `GEMINI_API_KEY` and security tokens are loaded securely from `.env` and never hardcoded in files.
+2. **XSS / Injection Protection**: All data inputs (chat messages, issues) and database loads are HTML-escaped using `html.escape` during save validations.
+3. **Secure Headers**: Integrated `Flask-Talisman` to set strict headers (Content Security Policy, X-Frame-Options, X-Content-Type-Options).
+4. **Rate Limiting**: Rate-limited the chatbot API `/chat` using `Flask-Limiter` (15 requests/minute limit to prevent quota spam).
+5. **Auth Guards**: The Admin Console `/admin` is guarded by token verification matching the token in `.env`.
+6. **Error Safeguards**: Custom application errors return generic screens (`templates/error.html`), masking internal stack traces from users.
+
+## ⚡ Efficiency Optimizations
+1. **Gemini Memory Caching**: 5-minute memory cache mapping user queries and conversation histories to previous replies to avoid redundant API cost.
+2. **Disk I/O Bypass**: Cached JSON loads in-memory, updating from disk only when `os.path.getmtime` reflects file modifications.
+3. **Static Query Short-Circuits**: Simple logistical checks (e.g. "Gate A directions") are mapped locally in code, responding instantly without contacting the Gemini API.
+4. **Gzip Compression**: Gzipped static resources on-the-fly using `Flask-Compress`.
+
+## ♿ Accessibility Compliance
+- **Skip Link**: Added a hidden "Skip to Main Content" link at the top of the body for keyboard users.
+- **Focus Indicators**: Standardized visible, orange `:focus-visible` outlines on all links and interactive inputs.
+- **Screen Reader Announcers**: Wrapped chat histories and status indicators in `aria-live="polite"` blocks.
+- **Contrast**: Contrast meets WCAG AA guidelines with soft bright-grey fonts on the premium dark theme.
 
 ---
 
 ## 🚀 Installation & Local Setup
 
-### 1. Clone the Project
+### 1. Clone & Install
 ```bash
 git clone https://github.com/Shreyash463/Fifa-Manage.git
 cd Fifa-Manage
-```
-
-### 2. Set Up Virtual Environment (Optional but Recommended)
-```bash
-python -m venv venv
-# On Windows
-venv\Scripts\activate
-# On Linux/macOS
-source venv/bin/activate
-```
-
-### 3. Install Dependencies
-```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configure Environment
+### 2. Configure Environment
 Create a `.env` file in the project root:
 ```env
 FLASK_APP=app.py
 FLASK_ENV=development
-FLASK_DEBUG=1
 GEMINI_API_KEY=your_gemini_api_key_here
+ADMIN_TOKEN=admin_secure_token_123
 ```
 
-### 5. Run the Application
+### 3. Run the App
 ```bash
 python app.py
 ```
-Open **[http://127.0.0.1:5000](http://127.0.0.1:5000)** in your web browser.
+Open **[http://127.0.0.1:5000](http://127.0.0.1:5000)** in your browser.
 
 ---
 
 ## 🧪 Running Automated Tests
 
-A comprehensive test suite is provided to verify all routes, API integrations, and forms:
+To execute the unit and integration test suite, run:
 
 ```bash
-python -m unittest test_app.py
+python -m pytest tests/
 ```
-
----
-
-## ☁️ Deployment
-
-### 1. Google Cloud Run (Recommended Container Deployment)
-Deploy using the provided `Dockerfile`:
-```bash
-gcloud run deploy fanpath-ai --source . --env-vars="GEMINI_API_KEY=YOUR_KEY" --allow-unauthenticated
-```
-
-### 2. Firebase Hosting (With Serverless Python Functions)
-1. Ensure your Firebase project is upgraded to the **Blaze (pay-as-you-go) plan** (required for Cloud Build APIs).
-2. Install tools: `npm install -g firebase-tools`
-3. Run `firebase login` and authenticate.
-4. Deploy the functions and hosting rules:
-   ```bash
-   firebase deploy --only functions,hosting
-   ```
+*(All 17 tests covering mock services, JSON loaders, edge inputs, rate limit checks, and token auth guards will execute).*

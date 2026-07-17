@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header" style="text-align: center; margin-bottom: 2rem;">
+    <h1 class="page-title">Transit & <span class="orange-gradient-text">Sustainability</span></h1>
+    <p class="page-subtitle">Complete guide to stadium transportation and eco-friendly visitor tips</p>
+</div>
+
+<!-- Skip to Content Target -->
+<div id="main-content">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;">
+        <!-- Transportation Card -->
+        <div class="card">
+            <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fa-solid fa-bus" style="color: var(--accent-orange);" aria-hidden="true"></i>
+                <span>Stadium Transportation</span>
+            </h2>
+            
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 1.25rem;">
+                <li style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--text-primary);">
+                        NJ Transit Rail (Train)
+                    </h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5;">
+                        Arrives directly at the stadium transit center located immediately outside **Gate A (North Entrance)**. Service runs frequently on match days.
+                    </p>
+                </li>
+                
+                <li style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--text-primary);">
+                        Express Shuttle Buses
+                    </h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5;">
+                        Departs from **Lot B (near Gate B)** connecting visitors to regional transit terminals. Buses run every 5-10 minutes starting 4 hours pre-match.
+                    </p>
+                </li>
+                
+                <li style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--text-primary);">
+                        Parking lots A, B, C, D & E
+                    </h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5;">
+                        Lots A, B, C, D require pre-booked permits. Lot E (near Gate C) is open public parking on a first-come, first-served basis. Handi-cap access parking is available in Lot 3.
+                    </p>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Sustainability Card -->
+        <div class="card">
+            <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fa-solid fa-leaf" style="color: #10b981;" aria-hidden="true"></i>
+                <span>Sustainability Tips</span>
+            </h2>
+            
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 1.25rem;">
+                <li style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--text-primary);">
+                        Water Refill Stations
+                    </h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5;">
+                        Visitors are permitted to bring empty reusable water bottles. Free, high-velocity water refill hydration hubs are located at **Section 110** and **Section 220**.
+                    </p>
+                </li>
+                
+                <li style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--text-primary);">
+                        Public Transit Benefits
+                    </h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5;">
+                        Help us reduce emissions! Travel via train or shuttle to reduce the carbon footprint of the tournament. Public transit riders get priority gate access.
+                    </p>
+                </li>
+                
+                <li style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--text-primary);">
+                        Waste Sorting & Recycling
+                    </h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5;">
+                        Please use the correct receptacles:
+                        - <strong style="color: #10b981;">Green Bins</strong>: Composting and food scraps.
+                        - <strong style="color: var(--accent-orange);">Blue Bins</strong>: Clean recyclables (plastic cups, aluminum cans).
+                        - <strong>Black Bins</strong>: General waste.
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

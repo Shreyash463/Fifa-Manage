@@ -1,7 +1,8 @@
 # FanPath AI — FIFA World Cup 2026 Stadium Visitor Assistant
 
 FanPath AI is a GenAI-powered web application built using Python Flask and Google Gemini. It is designed to assist visitors navigating stadium directions, concession stalls, transport hubs, accessibility structures, and live crowd situations during the FIFA World Cup 2026 games.
-
+Deployed Link=https://fifa-manage.onrender.com/
+    
 ## 🌟 Key Features
 
 1. **AI Chatbot Assistant**:

@@ -1,4 +1,16 @@
 {
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "venv",
+        ".git",
+        "firebase-debug.log",
+        "firebase-adminsdk-*.json"
+      ]
+    }
+  ],
   "hosting": {
     "public": "static",
     "ignore": [
@@ -9,10 +21,7 @@
     "rewrites": [
       {
         "source": "**",
-        "run": {
-          "serviceId": "fanpath-ai",
-          "region": "us-central1"
-        }
+        "function": "fanpath_ai"
       }
     ]
   }

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header" style="text-align: center; margin-bottom: 2rem;">
+    <h1 class="page-title">Admin Issue <span class="orange-gradient-text">Console</span></h1>
+    <p class="page-subtitle">Manage and resolve reported issues in real-time</p>
+</div>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <h2 style="font-size: 1.3rem; font-weight: 700;">Active & Resolved Issues</h2>
+        <div style="font-size: 0.9rem; color: var(--text-secondary);">
+            Total reports: <strong>{{ issues|length }}</strong>
+        </div>
+    </div>
+
+    {% if issues %}
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Reporter</th>
+                        <th>Location</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Reported Time</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issue in issues %}
+                        <tr>
+                            <td style="font-family: monospace; font-weight: 600; color: var(--text-secondary);">#{{ issue.id }}</td>
+                            <td>{{ issue.reporter_name }}</td>
+                            <td><span style="font-weight: 500;">{{ issue.zone }}</span></td>
+                            <td>
+                                <span style="font-size: 0.85rem; color: var(--text-secondary);">
+                                    {% if issue.category == 'Safety' %}
+                                        ⚠️ Safety
+                                    {% elif issue.category == 'Maintenance' %}
+                                        🔧 Maint.
+                                    {% elif issue.category == 'Crowding' %}
+                                        👥 Crowd
+                                    {% elif issue.category == 'Signage' %}
+                                        🪧 Sign
+                                    {% else %}
+                                        📝 Other
+                                    {% endif %}
+                                </span>
+                            </td>
+                            <td><div style="max-width: 250px; line-height: 1.4; font-size: 0.9rem;">{{ issue.description }}</div></td>
+                            <td style="font-size: 0.85rem; color: var(--text-secondary);">{{ issue.timestamp }}</td>
+                            <td>
+                                {% if issue.status == 'Open' %}
+                                    <span class="badge badge-open">Open</span>
+                                {% else %}
+                                    <span class="badge badge-resolved">Resolved</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="admin-actions">
+                                    <!-- Toggle Status Form -->
+                                    <form action="{{ url_for('resolve_issue', issue_id=issue.id) }}" method="POST" style="display:inline;">
+                                        {% if issue.status == 'Open' %}
+                                            <button type="submit" class="btn-action resolve" title="Mark as Resolved">
+                                                <i class="fa-solid fa-check"></i> Resolve
+                                            </button>
+                                        {% else %}
+                                            <button type="submit" class="btn-action unresolve" title="Reopen Issue">
+                                                <i class="fa-solid fa-rotate-left"></i> Reopen
+                                            </button>
+                                        {% endif %}
+                                    </form>
+
+                                    <!-- Delete Form -->
+                                    <form action="{{ url_for('delete_issue', issue_id=issue.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to permanently delete this issue report?');">
+                                        <button type="submit" class="btn-action delete" title="Delete Report">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 3rem 1.5rem; border: 1px dashed var(--border-color); border-radius: 12px; margin-top: 1rem;">
+            <i class="fa-solid fa-circle-check" style="font-size: 3rem; color: var(--color-low); margin-bottom: 1rem;"></i>
+            <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem;">All Systems Operational</h3>
+            <p style="color: var(--text-secondary); font-size: 0.95rem;">No active issues have been reported. Check back later or test by reporting an issue!</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

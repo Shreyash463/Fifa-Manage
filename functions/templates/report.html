@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header" style="text-align: center; margin-bottom: 2rem;">
+    <h1 class="page-title">Report a Stadium <span class="orange-gradient-text">Issue</span></h1>
+    <p class="page-subtitle">For staff and volunteers to flag facility, safety, or logistics concerns</p>
+</div>
+
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <form action="{{ url_for('report') }}" method="POST" id="issueReportForm">
+        <div class="form-group">
+            <label class="form-label" for="reporter_name">Your Name / Volunteer ID</label>
+            <input type="text" class="form-control" id="reporter_name" name="reporter_name" placeholder="e.g. Volunteer #142 (Leave empty for anonymous)" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="zone">Stadium Location / Zone <span style="color: var(--color-high);">*</span></label>
+            <select class="form-control" id="zone" name="zone" required>
+                <option value="" disabled selected>Select stadium zone...</option>
+                <option value="Gate A">Gate A (North Entrance)</option>
+                <option value="Gate B">Gate B (South Entrance)</option>
+                <option value="Gate C">Gate C (East Entrance)</option>
+                <option value="Gate D">Gate D (West Entrance)</option>
+                <option value="Food Court">Main Food Court</option>
+                <option value="Parking Lots">Parking Areas</option>
+                <option value="Main Stand">Main Seating Stand</option>
+                <option value="Other Zone">Other / Not Listed</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="category">Issue Category</label>
+            <select class="form-control" id="category" name="category">
+                <option value="Maintenance">Maintenance (e.g. Broken escalators, spills)</option>
+                <option value="Safety">Safety & Security (e.g. Blocked exits, hazards)</option>
+                <option value="Crowding">Heavy Crowding (e.g. Gate line delays)</option>
+                <option value="Signage">Signage & Directions (e.g. Missing signs)</option>
+                <option value="Other">Other Issues</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="description">Detailed Description <span style="color: var(--color-high);">*</span></label>
+            <textarea class="form-control" id="description" name="description" placeholder="Describe the issue clearly (e.g. escalator broken at Gate A level 2, water spill at section 104 restroom entry...)" required></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit" style="width: 100%;">
+            <i class="fa-solid fa-paper-plane-circle-check"></i>
+            Submit Issue Report
+        </button>
+    </form>
+</div>
+{% endblock %}

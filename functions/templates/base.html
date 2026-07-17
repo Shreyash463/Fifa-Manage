@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FanPath AI - GenAI Stadium Visitor Assistant for FIFA World Cup 2026. Gate directions, transport, and live crowd dashboard.">
+    <title>FanPath AI - FIFA World Cup 2026 Assistant</title>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="brand-logo">
+                <i class="fa-solid fa-soccer-ball"></i>
+                <span>FanPath</span> AI
+            </a>
+            
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-links" id="navLinks">
+                <li>
+                    <a href="{{ url_for('home') }}" class="nav-link {% if request.endpoint == 'home' %}active{% endif %}" id="nav-home">
+                        <i class="fa-solid fa-comments"></i> Assistant
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}" id="nav-dashboard">
+                        <i class="fa-solid fa-chart-simple"></i> Crowd Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('report') }}" class="nav-link {% if request.endpoint == 'report' %}active{% endif %}" id="nav-report">
+                        <i class="fa-solid fa-circle-exclamation"></i> Report Issue
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin') }}" class="nav-link {% if request.endpoint == 'admin' %}active{% endif %}" id="nav-admin">
+                        <i class="fa-solid fa-user-shield"></i> Admin
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for category, message in messages %}
+                        <li class="alert alert-{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2026 FIFA World Cup Stadium Assistant. Powered by <a href="#" target="_blank">Google Gemini AI</a>.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.75rem; opacity: 0.7;">For volunteer use. Keep stadium paths safe and clean!</p>
+    </footer>
+
+    <script>
+        // Toggle mobile menu
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            
+            // Toggle hamburger icon animation
+            const spans = menuToggle.querySelectorAll('span');
+            spans[0].style.transform = navLinks.classList.contains('active') ? 'rotate(45deg) translate(5px, 6px)' : 'none';
+            spans[1].style.opacity = navLinks.classList.contains('active') ? '0' : '1';
+            spans[2].style.transform = navLinks.classList.contains('active') ? 'rotate(-45deg) translate(5px, -6px)' : 'none';
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!menuToggle.contains(event.target) && !navLinks.contains(event.target) && navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+                const spans = menuToggle.querySelectorAll('span');
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            }
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
